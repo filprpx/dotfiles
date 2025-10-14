@@ -11,6 +11,8 @@ source ~/.local/share/omarchy/default/bash/rc
 # Github ssh-agent passphrase
 eval "$(ssh-agent -s)" >/dev/null
 ssh-add ~/.ssh/id_ed25519 2>/dev/null
+
+# Android Studio
 export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=$ANDROID_HOME/platform-tools:$PATH
 export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
