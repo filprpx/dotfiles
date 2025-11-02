@@ -16,3 +16,5 @@ ssh-add ~/.ssh/id_ed25519 2>/dev/null
 export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=$ANDROID_HOME/platform-tools:$PATH
 export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+
+. "$HOME/.local/share/../bin/env"
