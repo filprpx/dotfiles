@@ -93,20 +93,64 @@ return {
       local dap = require("dap")
       local mason = vim.fn.stdpath("data") .. "/mason"
       local netcoredbg = mason .. "/packages/netcoredbg/netcoredbg"
-      dap.adapters.coreclr = {
-        type = "executable",
-        command = netcoredbg,
-        args = { "--interpreter=vscode" },
-      }
+      local remote_host = vim.env.NETCOREDBG_HOST or "127.0.0.1"
+      local remote_port = tonumber(vim.env.NETCOREDBG_PORT) or 4711
 
-      local function add_configuration(lang)
+      dap.adapters.coreclr = function(callback, config)
+        if config.remoteAdapter then
+          callback({
+            type = "server",
+            host = config.remoteAdapter.host or remote_host,
+            port = config.remoteAdapter.port or remote_port,
+          })
+          return
+        end
+
+        callback({
+          type = "executable",
+          command = netcoredbg,
+          args = { "--interpreter=vscode" },
+        })
+      end
+
+      local pick_process = require("dap.utils").pick_process
+      local root = require("lazyvim.util").root.get() or vim.fn.getcwd()
+      root = vim.fs.normalize(root)
+
+      ---Resolve the dotnet PID inside the docker compose `web-debug` service.
+      local function docker_compose_dotnet_pid()
+        local cmd = "docker compose --profile debug exec web-debug pidof dotnet"
+        local output = vim.fn.systemlist(cmd)
+        if vim.v.shell_error ~= 0 then
+          error(string.format("Failed to resolve dotnet PID via `%s`: %s", cmd, table.concat(output, "\n")))
+        end
+
+        local line = output[1]
+        if not line or line == "" then
+          error("No dotnet process found in web-debug container (pid lookup returned empty output)")
+        end
+
+        local pid = line:match("(%d+)")
+        if not pid then
+          error("Unable to parse dotnet PID from output: " .. table.concat(output, "\n"))
+        end
+
+        return tonumber(pid)
+      end
+
+      local function ensure_config(lang, name, config)
         dap.configurations[lang] = dap.configurations[lang] or {}
-        for _, cfg in ipairs(dap.configurations[lang]) do
-          if cfg.name == "Launch .NET" then
+        for idx, cfg in ipairs(dap.configurations[lang]) do
+          if cfg.name == name then
+            dap.configurations[lang][idx] = vim.tbl_deep_extend("force", cfg, config)
             return
           end
         end
-        table.insert(dap.configurations[lang], {
+        table.insert(dap.configurations[lang], config)
+      end
+
+      local function add_configuration(lang)
+        ensure_config(lang, "Launch .NET", {
           type = "coreclr",
           name = "Launch .NET",
           request = "launch",
@@ -115,6 +159,25 @@ return {
           end,
           cwd = "${workspaceFolder}",
           stopAtEntry = false,
+        })
+        ensure_config(lang, "Attach .NET (host PID)", {
+          type = "coreclr",
+          request = "attach",
+          name = "Attach .NET (host PID)",
+          processId = pick_process,
+        })
+        ensure_config(lang, "Attach web-debug (Docker)", {
+          type = "coreclr",
+          request = "attach",
+          name = "Attach web-debug (Docker)",
+          remoteAdapter = {
+            host = remote_host,
+            port = remote_port,
+          },
+          sourceFileMap = {
+            [vim.env.NETCOREDBG_CONTAINER_ROOT or "/workspace"] = root,
+          },
+          processId = docker_compose_dotnet_pid,
         })
       end
 

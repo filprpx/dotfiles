@@ -1,0 +1,6 @@
+Debug Flow Recap
+
+- Start netcoredbg inside `web-debug` by running `/workspace/scripts/netcoredbg-listen.sh`; it listens on port `4711` but doesn’t attach yet.
+- Trigger “Attach web-debug (Docker)” in Neovim; the config runs `docker compose --profile debug exec web-debug pidof dotnet` and takes the first container PID.
+- Neovim connects to netcoredbg on `4711`, sends that PID plus a `sourceFileMap` mapping `/workspace` (inside the container) to your host project root.
+- Netcoredbg uses the provided PID to attach to the running dotnet process; source-path mapping keeps breakpoints and stack frames aligned with host files.
