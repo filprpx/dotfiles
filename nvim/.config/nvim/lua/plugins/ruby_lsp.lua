@@ -1,7 +1,7 @@
 return {
   -- Enable ruby-lsp support via mason + nvim-lspconfig
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     opts = {
       ensure_installed = { "ruby_lsp" },
     },
