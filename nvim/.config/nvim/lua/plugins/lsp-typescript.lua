@@ -15,12 +15,26 @@ return {
         "force",
         opts.servers.vtsls or {},
         {
+          filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
           settings = {
             typescript = {
               inlayHints = {
                 parameterNames = { enabled = "none" },
+                parameterTypes = { enabled = false },
                 variableTypes = { enabled = false },
                 propertyDeclarationTypes = { enabled = false },
+                functionLikeReturnTypes = { enabled = false },
+                enumMemberValues = { enabled = false },
+              },
+            },
+            javascript = {
+              inlayHints = {
+                parameterNames = { enabled = "none" },
+                parameterTypes = { enabled = false },
+                variableTypes = { enabled = false },
+                propertyDeclarationTypes = { enabled = false },
+                functionLikeReturnTypes = { enabled = false },
+                enumMemberValues = { enabled = false },
               },
             },
           },
@@ -32,7 +46,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
       opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, { "tsx", "typescript" })
+      vim.list_extend(opts.ensure_installed, { "tsx", "typescript", "javascript" })
     end,
   },
 }
