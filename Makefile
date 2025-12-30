@@ -1,4 +1,4 @@
-PACKAGES := hypr waybar nvim shell
+PACKAGES := hypr waybar nvim shell ghostty
 
 .PHONY: stow unstow restow
 stow:
