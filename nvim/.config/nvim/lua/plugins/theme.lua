@@ -1,1 +1,0 @@
-/home/filprpx/.config/omarchy/current/theme/neovim.lua
