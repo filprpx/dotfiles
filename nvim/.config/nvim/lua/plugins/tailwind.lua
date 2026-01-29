@@ -15,7 +15,19 @@ return {
             "svelte",
             "vue",
             "rust",
-            "eruby", -- for Rails .html.erb
+            "eruby",
+          },
+          init_options = {
+            userLanguages = {
+              eruby = "erb",
+            },
+          },
+          settings = {
+            tailwindCSS = {
+              includeLanguages = {
+                erb = "html",
+              },
+            },
           },
         },
       },
