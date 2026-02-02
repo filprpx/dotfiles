@@ -1,4 +1,4 @@
-PACKAGES := hypr waybar nvim shell ghostty
+PACKAGES := hypr waybar nvim shell ghostty opencode
 
 .PHONY: stow unstow restow
 stow:
@@ -15,4 +15,3 @@ status:
 
 save:
 	git add -A && git commit -m "update dotfiles" && git push
-
