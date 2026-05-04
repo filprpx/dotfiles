@@ -1,0 +1,7 @@
+linters-settings:
+  errcheck:
+    exclude-functions:
+      - io.Closer.Close
+      - io.ReadCloser.Close
+      - io.WriteCloser.Close
+      - (*net/http.Response).Body.Close
