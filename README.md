@@ -14,3 +14,17 @@ that is intentionally kept across updates.
 
 The configuration files under `~/.config` are linked to this repository. Do not
 replace Omarchy's files under `/usr/share/omarchy` or `~/.local/share/omarchy`.
+
+## Neovim Setup
+
+Install only the Neovim configuration on another machine:
+
+```bash
+./install-nvim.sh --dry-run
+./install-nvim.sh
+```
+
+The installer requires Neovim 0.11 or newer. It backs up an existing
+`~/.config/nvim` before creating the repository link and never modifies
+Neovim's plugin/cache directories. On Ubuntu, missing command-line tools can
+be installed explicitly with `--install-deps`.
