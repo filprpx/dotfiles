@@ -1,0 +1,7 @@
+# Local/editor artifacts
+*.swp
+*.swo
+*~
+
+# Migration and backup material
+dotfiles-migration-backup-*/
